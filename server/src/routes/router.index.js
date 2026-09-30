@@ -1,4 +1,5 @@
 import { Router } from "express";
+import authRoutes from "./route.authRoutes.js";
 
 const router = Router();
 
@@ -8,5 +9,7 @@ router.get("/health", (req, res) => {
         message: "Movie Explorer API is running",
     });
 });
+
+router.use("/auth", authRoutes);
 
 export default router;
