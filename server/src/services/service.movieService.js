@@ -3,25 +3,55 @@ import axios from "axios";
 import { environment } from "../config/environment.js";
 import { AppError } from "../utils/AppError.js";
 
+const token = (environment.TMDB_ACCESS_TOKEN || "").trim();
+const isJwt = token.startsWith("eyJ") || token.startsWith("Bearer ");
+
 const tmdb = axios.create({
     baseURL: "https://api.themoviedb.org/3",
     timeout: 10000,
-    headers: {
-        Authorization: `Bearer ${environment.TMDB_ACCESS_TOKEN}`,
-    },
+    headers: isJwt
+        ? {
+              Authorization: token.startsWith("Bearer ")
+                  ? token
+                  : `Bearer ${token}`,
+          }
+        : {},
 });
 
 async function get(path, params = {}) {
     try {
+        const queryParams = {
+            language: "en-US",
+            ...params,
+        };
+
+        if (!isJwt && token) {
+            queryParams.api_key = token;
+        }
+
         const response = await tmdb.get(path, {
-            params: {
-                language: "en-US",
-                ...params,
-            },
+            params: queryParams,
         });
 
         return response.data;
     } catch (error) {
+        // Log the cause without exposing your token.
+        console.error("TMDb error:", {
+            endpoint: path,
+            status: error.response?.status,
+            code: error.code,
+            message:
+                error.response?.data?.status_message ||
+                error.message,
+        });
+
+        if (error.response?.status === 401) {
+            throw new AppError(
+                "TMDb authentication failed. Check the backend access token.",
+                502
+            );
+        }
+
         if (error.response?.status === 404) {
             throw new AppError("Movie not found.", 404);
         }

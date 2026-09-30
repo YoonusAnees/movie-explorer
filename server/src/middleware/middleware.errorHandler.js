@@ -10,16 +10,21 @@ export function errorHandler(error, req, res, next) {
         });
     }
 
-    const status = error.status || 500;
+    const statusCode =
+        typeof error.statusCode === "number"
+            ? error.statusCode
+            : typeof error.status === "number"
+                ? error.status
+                : 500;
 
-    if (status >= 500) {
-        console.error("Request failed:", error.name, status);
+    if (statusCode >= 500) {
+        console.error("Request failed:", error.name || "Error", statusCode, error.message);
     }
 
-    res.status(status).json({
+    res.status(statusCode).json({
         success: false,
         message:
-            status >= 500 && !error.status
+            statusCode >= 500 && !error.isOperational
                 ? "Something went wrong. Please try again."
                 : error.message,
     });

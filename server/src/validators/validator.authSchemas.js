@@ -27,14 +27,14 @@ export const credentialsSchema = z
     })
     .strict();
 
-const passwordRepeat = z.string().refine((v) => v === password.parse(v), {
-    message: "Passwords do not match.",
-});
-
 export const registrationSchema = z
     .object({
         username,
         password,
-        passwordRepeat,
+        passwordRepeat: z.string().min(1, "Please repeat your password."),
     })
-    .strict();
+    .strict()
+    .refine((data) => data.password === data.passwordRepeat, {
+        message: "Passwords do not match.",
+        path: ["passwordRepeat"],
+    });
