@@ -28,3 +28,6 @@ export { default as NewReleasesIcon } from "@mui/icons-material/NewReleases";
 
 export { default as VisibilityIcon } from "@mui/icons-material/Visibility";
 export { default as VisibilityOffIcon } from "@mui/icons-material/VisibilityOff";
+
+export { default as PlayArrowIcon } from "@mui/icons-material/PlayArrow";
+export { default as InfoOutlinedIcon } from "@mui/icons-material/InfoOutlined";

@@ -29,6 +29,7 @@ import {
 import SearchBar from "../components/movies/SearchBar";
 import MovieFilters from "../components/movies/MovieFilters";
 import MovieGrid from "../components/movies/MovieGrid";
+import HeroBanner from "../components/movies/HeroBanner";
 
 import LoadingState from "../components/common/LoadingState";
 import ErrorState from "../components/common/ErrorState";
@@ -93,15 +94,15 @@ export default function HomePage() {
 
   const visibleMovies = query
     ? items.filter(
-        (movie) =>
-          (!filters.genre ||
-            movie.genre_ids?.includes(
-              Number(filters.genre)
-            )) &&
-          (!filters.rating ||
-            movie.vote_average >=
-              Number(filters.rating))
-      )
+      (movie) =>
+        (!filters.genre ||
+          movie.genre_ids?.includes(
+            Number(filters.genre)
+          )) &&
+        (!filters.rating ||
+          movie.vote_average >=
+          Number(filters.rating))
+    )
     : items;
 
   const filtered =
@@ -123,53 +124,38 @@ export default function HomePage() {
     );
   }
 
+  const scrollToExplore = () => {
+    document.getElementById("explore-section")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <Box sx={{ pb: 4 }}>
-      {/* Hero Header */}
-      <Box sx={{ mb: 4, textAlign: { xs: "left", sm: "left" } }}>
-        <Typography
-          component="h1"
-          variant="h3"
-          sx={{
-            fontWeight: 800,
-            fontSize: {
-              xs: 28,
-              sm: 38,
-              md: 44,
-            },
-            letterSpacing: "-0.03em",
-            color: "text.primary",
-          }}
-        >
-          Find your next favorite film
-        </Typography>
+      {/* Featured Landing Hero Banner */}
+      {!query && (
+        <HeroBanner
+          movie={items[0]}
+          genres={genres}
+          onExploreClick={scrollToExplore}
+        />
+      )}
 
-        <Typography
-          color="text.secondary"
-          sx={{
-            mt: 1,
-            fontSize: { xs: "0.95rem", md: "1.05rem" },
-            maxWidth: 600,
-          }}
-        >
-          Explore trending stories, discover hidden gems, and build your personal collection.
-        </Typography>
+      {/* Explore & Filters Section */}
+      <Box id="explore-section">
+        <SearchBar
+          query={query}
+          onSearch={(value) =>
+            dispatch(setQuery(value))
+          }
+        />
+
+        <MovieFilters
+          filters={filters}
+          genres={genres}
+          onChange={(value) =>
+            dispatch(setFilters(value))
+          }
+        />
       </Box>
-
-      <SearchBar
-        query={query}
-        onSearch={(value) =>
-          dispatch(setQuery(value))
-        }
-      />
-
-      <MovieFilters
-        filters={filters}
-        genres={genres}
-        onChange={(value) =>
-          dispatch(setFilters(value))
-        }
-      />
 
       {query && (
         <Stack

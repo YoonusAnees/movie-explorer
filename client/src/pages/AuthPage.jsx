@@ -167,7 +167,6 @@ export default function AuthPage({ mode }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
               boxShadow: "0 4px 14px rgba(79,70,229,0.35)",
             }}
           >
@@ -249,6 +248,13 @@ export default function AuthPage({ mode }) {
               autoFocus
               fullWidth
               inputProps={{ minLength: 3, maxLength: 30 }}
+              InputLabelProps={{
+                sx: {
+                  "&.MuiInputLabel-shrink": {
+                    transform: "translate(22px, -9px) scale(0.75)",
+                  },
+                },
+              }}
               sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2.5 } }}
             />
 
@@ -263,6 +269,13 @@ export default function AuthPage({ mode }) {
               fullWidth
               inputProps={{ minLength: 8, maxLength: 64 }}
               helperText="Minimum 8 characters."
+              InputLabelProps={{
+                sx: {
+                  "&.MuiInputLabel-shrink": {
+                    transform: "translate(18px, -9px) scale(0.75)",
+                  },
+                },
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

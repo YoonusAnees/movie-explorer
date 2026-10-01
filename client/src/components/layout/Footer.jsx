@@ -193,7 +193,7 @@ export default function Footer() {
             sm: "row",
           }}
           alignItems={{
-            xs: "flex-start",
+            xs: "center",
             sm: "center",
           }}
           justifyContent="space-between"
@@ -203,7 +203,7 @@ export default function Footer() {
           <Typography
             variant="caption"
             color="text.secondary"
-            alignSelf="center"
+            sx={{ textAlign: { xs: "center", sm: "left" } }}
           >
             © {year} Movie Explorer. All rights reserved.
           </Typography>
@@ -216,6 +216,7 @@ export default function Footer() {
             sx={{
               px: 0,
               color: "text.secondary",
+              justifyContent: { xs: "center", sm: "flex-start" },
               "&:hover": {
                 color: "primary.main",
                 bgcolor: "transparent",
