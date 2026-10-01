@@ -1,12 +1,14 @@
 import axios from "axios";
 
-const axiosClient = axios.create({
-  baseURL:
-    process.env.REACT_APP_API_URL || "/api/v1",
+const rawBaseUrl = (process.env.REACT_APP_API_URL || "/api/v1").trim();
+const baseURL = rawBaseUrl.endsWith("/api/v1")
+  ? rawBaseUrl
+  : `${rawBaseUrl.replace(/\/+$/, "")}/api/v1`;
 
+const axiosClient = axios.create({
+  baseURL,
   withCredentials: true,
   timeout: 15000,
-
   headers: {
     "X-Requested-With": "MovieExplorer",
   },
