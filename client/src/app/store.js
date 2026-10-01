@@ -35,11 +35,15 @@ persistence.startListening({
   matcher: isAnyOf(
     authenticate.fulfilled,
     restoreSession.fulfilled,
-    signOut.fulfilled
+    signOut.fulfilled,
+    restoreSession.rejected
   ),
 
   effect: (action, api) => {
-    if (action.type === signOut.fulfilled.type) {
+    if (
+      action.type === signOut.fulfilled.type ||
+      (action.type === restoreSession.rejected.type && action.payload?.status === 401)
+    ) {
       api.dispatch(
         loadFavorites({
           owner: null,
