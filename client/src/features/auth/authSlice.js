@@ -10,6 +10,7 @@ import {
   writeStorage,
   removeStorage,
   AUTH_USER_KEY,
+  AUTH_TOKEN_KEY,
 } from "../../utils/storage";
 
 export const restoreSession = createAsyncThunk(
@@ -36,6 +37,9 @@ export const authenticate = createAsyncThunk(
   ) => {
     try {
       const response = await authApi[mode](credentials);
+      if (response.data?.token) {
+        writeStorage(AUTH_TOKEN_KEY, response.data.token);
+      }
       return response.data.data;
     } catch (error) {
       return rejectWithValue(apiError(error));
@@ -84,6 +88,7 @@ const authSlice = createSlice({
             writeStorage(AUTH_USER_KEY, action.payload);
           } else {
             removeStorage(AUTH_USER_KEY);
+            removeStorage(AUTH_TOKEN_KEY);
           }
         }
       )
@@ -95,6 +100,7 @@ const authSlice = createSlice({
           if (action.payload?.status === 401) {
             state.user = null;
             removeStorage(AUTH_USER_KEY);
+            removeStorage(AUTH_TOKEN_KEY);
           }
         }
       )
@@ -134,12 +140,14 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = null;
         removeStorage(AUTH_USER_KEY);
+        removeStorage(AUTH_TOKEN_KEY);
       })
 
       .addCase(signOut.rejected, (state, action) => {
         state.loading = false;
         state.user = null;
         removeStorage(AUTH_USER_KEY);
+        removeStorage(AUTH_TOKEN_KEY);
         state.error =
           action.payload || "Unable to sign out.";
       });

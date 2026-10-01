@@ -12,7 +12,12 @@ import { isAllowedOrigin } from "./utils/allowedOrigins.js";
 
 const app = express();
 
-if (environment.TRUST_PROXY === "1" || environment.NODE_ENV === "production") {
+if (
+    environment.TRUST_PROXY === "1" ||
+    environment.NODE_ENV === "production" ||
+    process.env.RENDER === "true" ||
+    Boolean(process.env.RENDER_SERVICE_ID)
+) {
     app.set("trust proxy", 1);
 }
 

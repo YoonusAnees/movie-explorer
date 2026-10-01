@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { readStorage, AUTH_TOKEN_KEY } from "../utils/storage";
+
 const rawBaseUrl = (process.env.REACT_APP_API_URL || "/api/v1").trim();
 const baseURL = rawBaseUrl.endsWith("/api/v1")
   ? rawBaseUrl
@@ -12,6 +14,14 @@ const axiosClient = axios.create({
   headers: {
     "X-Requested-With": "MovieExplorer",
   },
+});
+
+axiosClient.interceptors.request.use((config) => {
+  const token = readStorage(AUTH_TOKEN_KEY, null);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const apiError = (error) =>

@@ -29,6 +29,11 @@ export function isAllowedOrigin(origin) {
     // Always allow localhost for convenience
     if (origin === "http://localhost:3000" || origin === "http://127.0.0.1:3000") return true;
 
+    // Allow any Vercel deployment/preview URL
+    if (origin.endsWith(".vercel.app")) {
+        return true;
+    }
+
     if (environment.NODE_ENV !== "production") {
         // Allow any local network IP in dev
         if (
@@ -36,11 +41,6 @@ export function isAllowedOrigin(origin) {
                 origin
             )
         ) {
-            return true;
-        }
-    } else {
-        // Allow any Vercel preview/deployment URL in production
-        if (origin.endsWith(".vercel.app")) {
             return true;
         }
     }

@@ -27,6 +27,7 @@ export function removeStorage(key) {
 }
 
 export const AUTH_USER_KEY = "movieExplorer:authUser";
+export const AUTH_TOKEN_KEY = "movieExplorer:authToken";
 
 export const favoriteKey = (owner) =>
   `movieExplorer:favorites:${owner}`;

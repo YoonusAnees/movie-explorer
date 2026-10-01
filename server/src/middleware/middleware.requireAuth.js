@@ -7,7 +7,14 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const requireAuth = asyncHandler(
     async (req, res, next) => {
-        const token = req.cookies.movie_session;
+        let token = req.cookies?.movie_session;
+
+        if (!token && req.headers.authorization) {
+            const parts = req.headers.authorization.split(" ");
+            if (parts.length === 2 && parts[0].toLowerCase() === "bearer") {
+                token = parts[1];
+            }
+        }
 
         if (!token) {
             throw new AppError(
