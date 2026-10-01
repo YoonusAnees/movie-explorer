@@ -1,11 +1,10 @@
-import { Box, Button, Chip, Container, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { imageUrl, releaseYear } from "../../utils/movieHelpers";
 import {
   ExpandMoreIcon,
   PlayArrowIcon,
   StarIcon,
-  WhatshotIcon,
 } from "../common/Icons";
 
 export default function HeroBanner({ movie, genres = [], onExploreClick }) {
@@ -133,7 +132,6 @@ export default function HeroBanner({ movie, genres = [], onExploreClick }) {
           {/* Top Spotlight Tag */}
           <Stack direction="row" alignItems="center" spacing={1.5} sx={{ flexWrap: "wrap", gap: 1 }}>
             <Chip
-              icon={<WhatshotIcon sx={{ color: "#f59e0b !important", fontSize: 16 }} />}
               label="Trending Spotlight"
               size="small"
               sx={{
