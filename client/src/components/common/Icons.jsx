@@ -31,3 +31,4 @@ export { default as VisibilityOffIcon } from "@mui/icons-material/VisibilityOff"
 
 export { default as PlayArrowIcon } from "@mui/icons-material/PlayArrow";
 export { default as InfoOutlinedIcon } from "@mui/icons-material/InfoOutlined";
+export { default as LogoutIcon } from "@mui/icons-material/Logout";

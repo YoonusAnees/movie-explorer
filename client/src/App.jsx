@@ -23,9 +23,7 @@ export default function App() {
   );
 
   useEffect(() => {
-    const request = dispatch(restoreSession());
-
-    return () => request.abort();
+    dispatch(restoreSession());
   }, [dispatch]);
 
   return (

@@ -8,18 +8,25 @@ import { environment } from "./config/environment.js";
 import routes from "./routes/router.index.js";
 import { checkMutation } from "./middleware/middleware.checkMutation.js";
 import { errorHandler } from "./middleware/middleware.errorHandler.js";
+import { isAllowedOrigin } from "./utils/allowedOrigins.js";
 
 const app = express();
 
-if (environment.TRUST_PROXY === "1") {
+if (environment.TRUST_PROXY === "1" || environment.NODE_ENV === "production") {
     app.set("trust proxy", 1);
 }
 
 app.use(helmet());
 
+
 app.use(
     cors({
-        origin: new URL(environment.CLIENT_URL).origin,
+        origin: (origin, callback) => {
+            if (isAllowedOrigin(origin)) {
+                return callback(null, origin || true);
+            }
+            return callback(new Error("CORS origin not allowed: " + origin), false);
+        },
         credentials: true,
     })
 );

@@ -38,29 +38,39 @@ persistence.startListening({
     signOut.fulfilled
   ),
 
-  effect: (_, api) => {
+  effect: (action, api) => {
+    if (action.type === signOut.fulfilled.type) {
+      api.dispatch(
+        loadFavorites({
+          owner: null,
+          items: [],
+        })
+      );
+      return;
+    }
+
     const owner =
       api.getState().auth.user?.id || null;
 
-    const saved = owner
-      ? readStorage(favoriteKey(owner), [])
-      : [];
+    if (owner) {
+      const saved = readStorage(favoriteKey(owner), []);
 
-    const items = Array.isArray(saved)
-      ? saved.filter(
-          (movie) =>
-            movie &&
-            Number.isInteger(movie.id) &&
-            typeof movie.title === "string"
-        )
-      : [];
+      const items = Array.isArray(saved)
+        ? saved.filter(
+            (movie) =>
+              movie &&
+              Number.isInteger(movie.id) &&
+              typeof movie.title === "string"
+          )
+        : [];
 
-    api.dispatch(
-      loadFavorites({
-        owner,
-        items,
-      })
-    );
+      api.dispatch(
+        loadFavorites({
+          owner,
+          items,
+        })
+      );
+    }
   },
 });
 
@@ -70,9 +80,11 @@ persistence.startListening({
   effect: (_, api) => {
     const { owner, items } =
       api.getState().favorites;
+    const currentOwner =
+      owner || api.getState().auth.user?.id || null;
 
-    if (owner) {
-      writeStorage(favoriteKey(owner), items);
+    if (currentOwner) {
+      writeStorage(favoriteKey(currentOwner), items);
     }
   },
 });

@@ -15,8 +15,12 @@ const schema = z.object({
 
     CLIENT_URL: z
         .string()
-        .url()
         .default("http://localhost:3000"),
+
+    ALLOWED_ORIGINS: z
+        .string()
+        .optional()
+        .default(""),
 
     MONGODB_URI: z.string().min(1),
     JWT_SECRET: z.string().min(32),

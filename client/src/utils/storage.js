@@ -18,5 +18,15 @@ export function writeStorage(key, value) {
   }
 }
 
+export function removeStorage(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Keep the application usable if browser storage is unavailable.
+  }
+}
+
+export const AUTH_USER_KEY = "movieExplorer:authUser";
+
 export const favoriteKey = (owner) =>
   `movieExplorer:favorites:${owner}`;

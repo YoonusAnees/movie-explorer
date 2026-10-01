@@ -8,7 +8,7 @@ const baseURL = rawBaseUrl.endsWith("/api/v1")
 const axiosClient = axios.create({
   baseURL,
   withCredentials: true,
-  timeout: 15000,
+  timeout: 45000,
   headers: {
     "X-Requested-With": "MovieExplorer",
   },

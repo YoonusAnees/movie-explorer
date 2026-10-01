@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 
 import { NavLink } from "react-router-dom";
+import { LogoutIcon } from "../common/Icons";
 
 export default function MobileMenu({
   open,
@@ -52,14 +53,19 @@ export default function MobileMenu({
             <Button
               disabled={loading}
               onClick={onLogout}
+              startIcon={<LogoutIcon />}
+              color="error"
+              variant="outlined"
+              sx={{ textTransform: "none", fontWeight: 600 }}
             >
-              Sign out ({user.username})
+              Logout
             </Button>
           ) : (
             <Button
               component={NavLink}
               to="/login"
               onClick={onClose}
+              sx={{ textTransform: "none", fontWeight: 600 }}
             >
               Sign in
             </Button>

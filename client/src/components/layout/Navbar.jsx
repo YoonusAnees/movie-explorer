@@ -5,7 +5,6 @@ import {
   AppBar,
   Box,
   Button,
-  Chip,
   Container,
   IconButton,
   Toolbar,
@@ -16,7 +15,7 @@ import {
   DarkModeIcon,
   LightModeIcon,
   MovieIcon,
-  PersonIcon,
+  LogoutIcon,
 } from "../common/Icons";
 
 import { toggleTheme } from "../../features/theme/themeSlice";
@@ -149,40 +148,70 @@ export default function Navbar() {
               gap: { xs: 0.75, sm: 1.5 },
             }}
           >
-            {/* Desktop Full Sign Out Button / Mobile User Chip */}
+            {/* User Greeting and Logout Button */}
             {user ? (
-              <>
-                {/* Desktop view button */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: { xs: 1, sm: 1.5 },
+                }}
+              >
+                <Typography
+                  component="span"
+                  sx={{
+                    fontSize: { xs: "0.82rem", sm: "0.9rem" },
+                    color: "text.secondary",
+                    fontWeight: 500,
+                    maxWidth: { xs: 120, sm: 200, md: 260 },
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  Hello,&nbsp;
+                  <Box
+                    component="span"
+                    sx={{
+                      fontWeight: 700,
+                      color: "text.primary",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {user.username}
+                  </Box>
+                </Typography>
+
                 <Button
                   disabled={loading}
                   onClick={logout}
                   variant="outlined"
                   size="small"
+                  startIcon={<LogoutIcon sx={{ fontSize: "0.95rem !important" }} />}
                   sx={{
                     display: { xs: "none", sm: "inline-flex" },
-                    fontSize: "0.82rem",
+                    borderColor: "divider",
+                    color: "text.secondary",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    fontSize: { xs: "0.75rem", sm: "0.82rem" },
+                    px: { xs: 1, sm: 1.5 },
+                    py: { xs: 0.35, sm: 0.5 },
+                    minWidth: "auto",
+                    "&:hover": {
+                      borderColor: "error.main",
+                      color: "error.main",
+                      bgcolor: "action.hover",
+                    },
                   }}
                 >
-                  Sign out ({user.username})
+                  Logout
                 </Button>
-
-                {/* Mobile view user badge */}
-                <Chip
-                  icon={<PersonIcon sx={{ fontSize: "1rem !important" }} />}
-                  label={user.username}
-                  size="small"
-                  variant="outlined"
-                  onClick={logout}
-                  title="Click to sign out"
-                  sx={{
-                    display: { xs: "inline-flex", sm: "none" },
-                    maxWidth: 110,
-                    fontWeight: 600,
-                    fontSize: "0.75rem",
-                    bgcolor: "action.selected",
-                  }}
-                />
-              </>
+              </Box>
             ) : (
               <Button
                 variant="contained"

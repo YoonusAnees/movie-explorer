@@ -5,15 +5,25 @@ import {
 
 import { authApi } from "../../api/authApi";
 import { apiError } from "../../api/axiosClient";
+import {
+  readStorage,
+  writeStorage,
+  removeStorage,
+  AUTH_USER_KEY,
+} from "../../utils/storage";
 
 export const restoreSession = createAsyncThunk(
   "auth/restore",
-  async (_, { signal }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await authApi.me(signal);
+      const response = await authApi.me();
       return response.data.data;
-    } catch {
-      return null;
+    } catch (error) {
+      const status = error.response?.status;
+      return rejectWithValue({
+        status,
+        message: apiError(error),
+      });
     }
   }
 );
@@ -44,12 +54,14 @@ export const signOut = createAsyncThunk(
   }
 );
 
+const cachedUser = readStorage(AUTH_USER_KEY, null);
+
 const authSlice = createSlice({
   name: "auth",
 
   initialState: {
-    user: null,
-    initialized: false,
+    user: cachedUser,
+    initialized: !!cachedUser,
     loading: false,
     error: null,
   },
@@ -68,15 +80,22 @@ const authSlice = createSlice({
           state.user = action.payload;
           state.initialized = true;
           state.error = null;
+          if (action.payload) {
+            writeStorage(AUTH_USER_KEY, action.payload);
+          } else {
+            removeStorage(AUTH_USER_KEY);
+          }
         }
       )
 
       .addCase(
         restoreSession.rejected,
-        (state) => {
-          state.user = null;
+        (state, action) => {
           state.initialized = true;
-          state.error = null;
+          if (action.payload?.status === 401) {
+            state.user = null;
+            removeStorage(AUTH_USER_KEY);
+          }
         }
       )
 
@@ -91,6 +110,9 @@ const authSlice = createSlice({
           state.loading = false;
           state.user = action.payload;
           state.initialized = true;
+          if (action.payload) {
+            writeStorage(AUTH_USER_KEY, action.payload);
+          }
         }
       )
 
@@ -111,10 +133,13 @@ const authSlice = createSlice({
       .addCase(signOut.fulfilled, (state) => {
         state.loading = false;
         state.user = null;
+        removeStorage(AUTH_USER_KEY);
       })
 
       .addCase(signOut.rejected, (state, action) => {
         state.loading = false;
+        state.user = null;
+        removeStorage(AUTH_USER_KEY);
         state.error =
           action.payload || "Unable to sign out.";
       });

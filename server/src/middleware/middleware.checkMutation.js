@@ -1,5 +1,5 @@
-import { environment } from "../config/environment.js";
 import { AppError } from "../utils/AppError.js";
+import { isAllowedOrigin } from "../utils/allowedOrigins.js";
 
 export function checkMutation(req, res, next) {
     if (["GET", "HEAD", "OPTIONS"].includes(req.method)) {
@@ -11,9 +11,8 @@ export function checkMutation(req, res, next) {
     }
 
     const origin = req.get("Origin");
-    const allowedOrigin = new URL(environment.CLIENT_URL).origin;
 
-    if (origin && origin !== allowedOrigin) {
+    if (origin && !isAllowedOrigin(origin)) {
         return next(
             new AppError("Request origin is not allowed.", 403)
         );

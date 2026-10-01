@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -9,15 +10,24 @@ import {
   MovieIcon,
   FavoriteIcon,
   SearchIcon,
+  LogoutIcon,
+  PersonIcon,
+
 } from "../common/Icons";
+
+import { signOut } from "../../features/auth/authSlice";
 
 export default function MobileBottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, loading } = useSelector((state) => state.auth);
 
   const getActiveTab = () => {
     if (location.pathname === "/") return "discover";
     if (location.pathname.startsWith("/favorites")) return "favorites";
+    if (location.pathname === "/login") return "login";
     return "";
   };
 
@@ -34,6 +44,10 @@ export default function MobileBottomNav() {
       if (searchInput) {
         setTimeout(() => searchInput.focus(), 200);
       }
+    } else if (newValue === "logout") {
+      dispatch(signOut());
+    } else if (newValue === "login") {
+      navigate("/login");
     }
   };
 
@@ -97,6 +111,33 @@ export default function MobileBottomNav() {
           value="favorites"
           icon={<FavoriteIcon sx={{ fontSize: 22 }} />}
         />
+        {user ? (
+          <BottomNavigationAction
+            label="Logout"
+            value="logout"
+            disabled={loading}
+            icon={
+              <LogoutIcon
+                sx={{
+                  fontSize: 22,
+                  color: "error.main",
+                }}
+              />
+            }
+            sx={{
+              "& .MuiBottomNavigationAction-label": {
+                color: "error.main",
+                fontWeight: 600,
+              },
+            }}
+          />
+        ) : (
+          <BottomNavigationAction
+            label="Sign In"
+            value="login"
+            icon={<PersonIcon sx={{ fontSize: 22 }} />}
+          />
+        )}
       </BottomNavigation>
     </Paper>
   );
